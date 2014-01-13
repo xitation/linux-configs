@@ -1,0 +1,25 @@
+out_to_x no
+own_window no
+out_to_console yes
+background no
+max_text_width 0
+update_interval 5.0
+total_run_times 0
+short_units yes
+if_up_strictness address
+use_spacer left
+override_utf8_locale no
+cpu_avg_samples 2
+
+TEXT
+ [
+  { "full_text" : "${freq_g}GHz ${platform coretemp.0 temp 2}°C (${platform thinkpad_hwmon fan 1})" },
+  { "full_text" : "${loadavg} -${running_processes}" },
+  { "full_text" : "cpu ${cpu cpu0}%", "color" : ${if_match ${cpu cpu0}>90}"\#ff0000"${else}"\#ffffff"${endif} },
+  { "full_text" : "mem ${memperc}% (${swapperc}%)", "color" : ${if_match ${memperc}<90}"\#ffffff"${else}"\#ff0000"${endif} },
+  { "full_text" : "sda ${diskio_read sda}/${diskio_write sda}" },
+  { "full_text" : "${if_up wlan0}${wireless_bitrate wlan0}${wireless_link_qual wlan0}% - ${wireless_essid wlan0} (${downspeed wlan0}/${upspeed wlan0})${else}wlan${endif}" , "color" : ${if_up wlan0}"\#00ff00"${else}"\#ff0000"${endif} },
+  { "full_text" : "eth${if_up eth0} (${downspeed eth0}/${upspeed eth0})${endif}", "color" : ${if_up eth0}"\#00ff00"${else}"\#ff0000"${endif} },
+  { "full_text" : "${battery} ${battery_time}", "color" : ${if_match ${battery_percent}<20}"\#ff0000"${else}"\#ffffff"${endif} },
+  { "full_text" : "${time %a %m/%d %H:%M}", "color" : "\#ffff00" }
+ ],
