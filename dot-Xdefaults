@@ -1,0 +1,17 @@
+Rxvt.background: #131926
+Rxvt.foreground: #FFFFFF
+Rxvt.color4: #4F51F1
+Rxvt.color12: #9494FF
+Rxvt.cursorColor: green
+Rxvt.saveLines: 65535
+Rxvt.scrollBar_right: true
+Rxvt.scrollstyle: plain
+Rxvt.fading: 25
+Rxvt.font: xft:Liberation Mono:pixelsize=12
+#Rxvt.keysym.Prior: perl:pageup
+#Rxvt.keysym.Next: perl:pagedown
+#Rxvt.keysym.M-b: perl:paste
+#Rxvt.perl-lib: /home/scott/.rxvt-scripts
+#Rxvt.perl-ext: rxvt.pl
+Rxvt.scrollTtyOutput: false
+Rxvt.scrollTtyKeypress: true
