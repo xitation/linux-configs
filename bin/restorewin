@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+
+while(<>) { 
+   print $_;
+
+   @params = split(' ', $_); 
+
+   $winID = shift @params; 
+   $gravity = shift @params; 
+
+   if ($gravity != -1) 
+   { 
+      # TODO - Why is this necessary? 
+      $params[0] -= 1; 
+      $params[1] -= 43; 
+   } 
+
+   $params[0] -= 12;
+   $params[1] -= 12;
+
+   $pos = join(',', @params); 
+
+   $dummy = `wmctrl -ir $winID -e 0,$pos`; 
+}

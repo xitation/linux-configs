@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Fetch master from origin, regardless of which branch is checked out
+
+git diff --quiet
+clean=$?
+
+if [[ $clean != 0 ]]
+then
+   echo 'Commit or stash changes before continuing'
+   exit 1
+fi
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ $branch != 'master' ]]
+then
+   git checkout master
+fi
+
+git fetch origin
+git pull origin master
+
+if [[ $branch != 'master' ]]
+then
+  git checkout $branch
+fi

@@ -1,0 +1,3 @@
+cd $HOME/Drive
+grive
+find /tmp -maxdepth 1 -name changes-\*.xml -mmin +60 -exec rm {} \;

@@ -1,0 +1,1 @@
+wmctrl -Gl | cut -c1-34
