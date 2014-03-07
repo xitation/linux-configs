@@ -19,15 +19,14 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-date=`date`
-load=`cat /proc/loadavg | awk '{print $1}'`
+load=`cut -f2 -d\  /proc/loadavg`
 root_usage=`df -h / | awk '/\// {print $(NF-1)}'`
-memory_usage=`free -m | awk '/Mem:/ { total=$2 } /buffers\/cache/ { used=$3 } END { printf("%3.1f%%", used/total*100)}'`
-swap_usage=`free -m | awk '/Swap/ { printf("%3.1f%%", $3/$2*100) }'`
+memory_usage=`awk '/^MemTotal:/ { total=$2 } /^MemFree:/ { free=$2} /^Buffers:/ { buffers=$2} /^Cached:/ { cached=$2} END { printf("%3.1f%%", (total-(free+buffers+cached))/total*100 )}' /proc/meminfo`
+swap_usage=`awk '/^SwapTotal:/ { total=$2 } /^SwapFree:/ { free=$2} END { printf("%3.1f%%", (total-free)/total*100 )}' /proc/meminfo`
 users=`users | wc -w`
-time=`uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ printf $2" "$3 }'`
-processes=`ps aux | wc -l`
-ip=`/sbin/ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
+time=`uptime|grep -o -E "up[0-9a-z ]+"|cut -f2- -d\ `
+processes=`/bin/ls -d /proc/[0-9]* | wc -l`
+ip=`/sbin/ifconfig eth0 | grep -o -E "addr:[0-9\.]+" | cut -f2 -d:`
 
 printf "System load:\t%s\tIP Address:\t%s\n" $load $ip
 printf "Memory usage:\t%s\tSystem uptime:\t%s\n" $memory_usage "$time"
