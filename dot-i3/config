@@ -150,21 +150,20 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
 	status_command $HOME/.i3/conky-i3bar
-        #status_command i3status
         position top
         tray_output LVDS-0
 }
 
 # Scott's config
-exec --no-startup-id wicd-gtk -t
-#exec --no-startup-id blueman-applet
+exec --no-startup-id wpa_gui -t
+exec --no-startup-id blueman-applet
 exec --no-startup-id xscreensaver
 exec --no-startup-id btsync start
 exec --no-startup-id dunst
 exec --no-startup-id gnome-encfs -m /home/scott/Crypt
 bindsym Mod1+Control+l exec xscreensaver-command -lock
-bindsym Print exec gnome-screenshot -w
-bindsym Shift+Print exec gnome-screenshot
+bindsym Print exec scrot -s
+bindsym Shift+Print exec scrot
 bindsym $mod+Shift+p exec "i3-nagbar -t warning -m 'Do you really want to suspend the computer?' -b 'Yes, suspend' 'sudo pm-suspend'"
 bindsym $mod+Shift+o exec "i3-nagbar -t warning -m 'Do you really want to power off the computer?' -b 'Yes, shutdown' 'sudo shutdown -h now'"
 workspace_auto_back_and_forth yes
