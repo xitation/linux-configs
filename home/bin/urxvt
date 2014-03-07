@@ -1,1 +1,1 @@
-exec /usr/bin/urxvt -e sh -c "cat /etc/motd; exec zsh"
+exec /usr/bin/urxvt -e sh -c "run-parts /etc/update-motd.d; exec $SHELL"
