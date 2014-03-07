@@ -19,6 +19,17 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+#
+# The upstream version of this script was very inefficient - forking processes
+# when not needed. This version significantly reducses the number of processes
+# required to get the same info, and as a result is much, much faster.
+#
+# Additionally, static-ish stuff like the hostname and packages to install
+# is only generated once every 30 minutes (or as configured in cron).
+#
+# As a result, this shaves off the amount of time required to login to the system
+# by about 1 second or so, and when running as part of urxvt is nearly instant.
+
 load=`cut -f2 -d\  /proc/loadavg`
 root_usage=`df -h / | awk '/\// {print $(NF-1)}'`
 memory_usage=`awk '/^MemTotal:/ { total=$2 } /^MemFree:/ { free=$2} /^Buffers:/ { buffers=$2} /^Cached:/ { cached=$2} END { printf("%3.1f%%", (total-(free+buffers+cached))/total*100 )}' /proc/meminfo`
