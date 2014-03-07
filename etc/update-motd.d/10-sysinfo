@@ -30,17 +30,17 @@
 # As a result, this shaves off the amount of time required to login to the system
 # by about 1 second or so, and when running as part of urxvt is nearly instant.
 
-load=`cut -f2 -d\  /proc/loadavg`
+load=`awk '{print $1}' /proc/loadavg`
 root_usage=`df -h / | awk '/\// {print $(NF-1)}'`
-memory_usage=`awk '/^MemTotal:/ { total=$2 } /^MemFree:/ { free=$2} /^Buffers:/ { buffers=$2} /^Cached:/ { cached=$2} END { printf("%3.1f%%", (total-(free+buffers+cached))/total*100 )}' /proc/meminfo`
-swap_usage=`awk '/^SwapTotal:/ { total=$2 } /^SwapFree:/ { free=$2} END { printf("%3.1f%%", (total-free)/total*100 )}' /proc/meminfo`
+memory_usage=`awk '/^MemTotal:/ {total=$2} /^MemFree:/ {free=$2} /^Buffers:/ {buffers=$2} /^Cached:/ {cached=$2} END { printf("%3.1f%%", (total-(free+buffers+cached))/total*100)}' /proc/meminfo`
+swap_usage=`awk '{uptime=$1} END {days = int(uptime/86400); hours = int((uptime-(days*86400))/3600); printf("%d days, %d hours", days, hours)}' /proc/uptime`
 users=`users | wc -w`
-time=`uptime|grep -o -E "up[0-9a-z ]+"|cut -f2- -d\ `
+time=`awk '{uptime=$1} END {days = int(uptime/86400); hours = int((uptime-(days*86400))/3600); printf("%d days, %d hours", days, hours)}' /proc/uptime`
 processes=`/bin/ls -d /proc/[0-9]* | wc -l`
-ip=`/sbin/ifconfig eth0 | grep -o -E "addr:[0-9\.]+" | cut -f2 -d:`
+ip=`/sbin/ifconfig eth0 | awk -F"[: ]+" '/inet addr:/{print $4}'`
 
-printf "System load:\t%s\tIP Address:\t%s\n" $load $ip
-printf "Memory usage:\t%s\tSystem uptime:\t%s\n" $memory_usage "$time"
-printf "Usage on /:\t%s\tSwap usage:\t%s\n" $root_usage $swap_usage
-printf "Local Users:\t%s\tProcesses:\t%s\n" $users $processes
+printf "System load:\t%s\t\tIP Address:\t%s\n" $load $ip
+printf "Memory usage:\t%s\t\tSystem uptime:\t%s\n" $memory_usage "$time"
+printf "Usage on /:\t%s\t\tSwap usage:\t%s\n" $root_usage $swap_usage
+printf "Local Users:\t%s\t\tProcesses:\t%s\n" $users $processes
 echo
