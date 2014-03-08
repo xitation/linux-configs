@@ -19,7 +19,6 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#
 # The upstream version of this script was very inefficient - forking processes
 # when not needed. This version significantly reducses the number of processes
 # required to get the same info, and as a result is much, much faster.
@@ -29,6 +28,11 @@
 #
 # As a result, this shaves off the amount of time required to login to the system
 # by about 1 second or so, and when running as part of urxvt is nearly instant.
+
+#
+# BUGS: 
+#  * If no swap space, the output is bogus. Need to fix.
+#  * If priary network not eth0, no ip addr
 
 load=`awk '{print $1}' /proc/loadavg`
 root_usage=`df -h / | awk '/\// {print $(NF-1)}'`
