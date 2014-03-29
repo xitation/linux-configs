@@ -23,7 +23,7 @@ bit less messy when browsing this repo (and it's not like this repository is
 an actual mirror of ~ anyway).
 
 In many cases, I have different configurations for different systems, so I've
-broken them out into saparate files where appropriate.
+broken them out into separate files where appropriate.
 
 Most importantly, don't clone this and put these configurations into place
 expecting them to work for you - this is a reference when I set up my own
