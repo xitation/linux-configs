@@ -1,0 +1,64 @@
+# From http://ml.reddit.com/r/chrubuntu/comments/1t0vjk/installing_debian_testingsid_on_acer_c720_tips/
+
+# This scrip patches the kernel so the trackpad will work again on my
+# Acer C720 chromebook running Debian testing/Jessie.
+
+# Create a temp directory for our work
+#sudo apt-get install mktemp
+#tempbuild=`mktemp -d`
+tempbuild="/tmp/acer-fixup"
+mkdir $tempbuild
+cd $tempbuild
+
+# Determine kernel version
+mykern=${1:-$(uname -r)}
+
+# Install necessary deps to build a kernel
+sudo apt-get build-dep -y --no-install-recommends linux
+sudo apt-get install linux-headers-$mykern
+
+# Grab Debian kernel source
+apt-get source linux
+
+# Dumb hack to avoid needing to get the version
+cd linux*
+
+# Hack for patches due to module move
+ln -s drivers/platform/chrome/chromeos_laptop.c drivers/platform/x86/
+
+# Use Benson Leung's post-Pixel Chromebook patches:
+# https://patchwork.kernel.org/bundle/bleung/chromeos-laptop-deferring-and-haswell/
+for patch in 3078491 3078481 3074391 3074441 3074421 3074401 3074431 3074411; do
+  wget -O - https://patchwork.kernel.org/patch/$patch/raw/ | patch -p1
+done
+
+# Remove hack link
+rm -f drivers/platform/x86/chromeos_laptop.c
+
+# Need this
+cp /usr/src/linux-headers-$mykern/Module.symvers .
+
+# Prep tree
+cp /boot/config-$mykern ./.config
+make oldconfig
+make prepare
+make modules_prepare
+
+# Build only the needed directories
+#make SUBDIRS=drivers/platform/x86 modules
+make SUBDIRS=drivers/platform/chrome modules
+make SUBDIRS=drivers/i2c/busses modules
+
+# switch to using our new chromeos_laptop.ko module
+# preserve old as .orig
+sudo mv /lib/modules/$mykern/kernel/drivers/platform/chrome/chromeos_laptop.ko /lib/modules/$mykern/kernel/drivers/platform/chrome/chromeos_laptop.ko.orig
+sudo cp drivers/platform/chrome/chromeos_laptop.ko /lib/modules/$mykern/kernel/drivers/platform/chrome/
+
+# switch to using our new designware i2c modules
+# preserve old as .orig
+sudo mv /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-core.ko /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-core.ko.orig
+sudo mv /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-pci.ko /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-pci.ko.orig
+# sudo mv /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-platform.ko /lib/modules/$mykern/kernel/drivers/i2c/busses/i2c-designware-platform.ko.orig
+sudo cp drivers/i2c/busses/i2c-designware-*.ko /lib/modules/$mykern/kernel/drivers/i2c/busses/
+sudo depmod -a $mykern
+echo "Finished building Chromebook modules in $tempbuild. Reboot to use them."
