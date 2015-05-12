@@ -22,6 +22,6 @@
 OUT=${1}$(basename $0)
 exec >${OUT}
 
-/usr/lib/update-notifier/apt-check --human-readable
-/usr/lib/update-notifier/update-motd-reboot-required
+apt-get -s dist-upgrade | grep "^[[:digit:]]\+ upgraded"
+checkrestart
 echo
